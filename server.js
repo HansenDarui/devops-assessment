@@ -15,15 +15,6 @@ rollbar.log("Hello world!");
 
 app.use(express.json())
 
-app.get('/api/robots', (req, res) => {
-    try {
-        res.status(200).send(botsArr)
-    } catch (error) {
-        console.log('ERROR GETTING BOTS', error)
-        res.sendStatus(400)
-    }
-})
-
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'));
 });
@@ -31,6 +22,18 @@ app.get("/", (req, res) => {
 app.use("/styles", express.static(path.join(__dirname, "/public/index.css")));
 
 app.use("/js", express.static(path.join(__dirname, "/public/index.js")))
+
+
+
+app.get('/api/robots', (req, res) => {
+    try {
+        res.status(200).send(botsArr)
+    } catch (error) {
+        console.log('ERROR GETTING BOTS', error)
+        res.sendStatus(400)
+        rollbar.error("Couldn't get robots")
+    }
+})
 
 app.get('/api/robots/five', (req, res) => {
     try {
@@ -41,6 +44,7 @@ app.get('/api/robots/five', (req, res) => {
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
+        rollbar.error("could not find five robots")
     }
 })
 
@@ -72,6 +76,7 @@ app.post('/api/duel', (req, res) => {
     } catch (error) {
         console.log('ERROR DUELING', error)
         res.sendStatus(400)
+        rollbar.error("dueling failed")
     }
 })
 
@@ -81,6 +86,7 @@ app.get('/api/player', (req, res) => {
     } catch (error) {
         console.log('ERROR GETTING PLAYER STATS', error)
         res.sendStatus(400)
+        rollbar.error("couldnt find player")
     }
 })
 
